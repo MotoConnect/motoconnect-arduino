@@ -1,18 +1,21 @@
 #include <Wire.h>
 #include <MPU6050.h>
+#include "rgb_lcd.h"
 
 MPU6050 mpu;
+rgb_lcd lcd;
 
-// Constants for the complementary filter
-const float alpha = 0.98; // Weight for the gyroscope data
-const float beta = 0.02;  // Weight for the accelerometer data
+const int colorR = 255;
+const int colorG = 255;
+const int colorB = 255;
 
-// Variables to store pitch angle
+const float alpha = 0.98;
+const float beta = 0.02;
+
 float pitchAngle = 0.0;
 
-// Calibration factors
-float accelAngleX = 0.0;
-float gyroOffsetX = 0.0;
+float accelAngleY = 0.0;
+float gyroOffsetY = 0.0;
 
 void setup() {
   Serial.begin(9600);
@@ -20,43 +23,65 @@ void setup() {
   Wire.begin();
   mpu.initialize();
 
-  // Calibrate accelerometer and gyroscope
+  lcd.begin(16, 2);
+  
+  lcd.setRGB(colorR, colorG, colorB);
+
+  lcd.print("Inclinaison:");
+  lcd.setCursor(0, 1);
+  lcd.print("Temp:");
+
   calibrateSensors();
 }
 
 void loop() {
-  // Read accelerometer and gyroscope data
-  int16_t ax, ay, az, gx, gy, gz;
+  int16_t ax, ay, az, gx, gy, gz, angle;
   mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
-  
-  // Remove biases and apply calibration
-  float accelAngle = atan2(-ay - accelAngleX, az) * (180.0 / PI);
-  float gyroRate = (gx - gyroOffsetX) / 131.0; // Adjust the division factor based on the sensitivity of your sensor
 
-  // Calculate pitch angle using complementary filter
+  int16_t temperature = mpu.getTemperature();
+
+  float accelAngle = atan2(ax - accelAngleY, az) * (180.0 / PI);
+  float gyroRate = (gy - gyroOffsetY) / 131.0;
+
   pitchAngle = alpha * (pitchAngle + gyroRate * 0.01) + beta * accelAngle;
+
+  angle = int(trunc(pitchAngle));
+  temperature = int(trunc(temperature / 340.0 + 36.53));
+
+  if (angle < 0){
+    angle = angle * -1;
+  }
   
-  Serial.print("Pitch: ");
-  Serial.println(pitchAngle);
-  
-  delay(10); // Adjust the delay based on your application's requirements
+  if (angle == 99 || angle == 9) {
+    lcd.setCursor(12, 0);
+    lcd.print("    ");
+  }
+
+  lcd.setCursor(12, 0);
+  lcd.print(angle);
+
+  lcd.setCursor(5, 1);
+  lcd.print(temperature);
+  lcd.print("'C");
+
+  delay(10);
 }
 
 void calibrateSensors() {
   const int numSamples = 1000;
-  int32_t accelX = 0;
-  int32_t gyroX = 0;
+  int32_t accelY = 0;
+  int32_t gyroY = 0;
   int16_t ax, ay, az, gx, gy, gz;
 
   for (int i = 0; i < numSamples; ++i) {
     mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
 
-    accelX += ax;
-    gyroX += gx;
+    accelY += ay;
+    gyroY += gy;
     delay(1);
   }
 
-  int16_t averageAz = accelX / numSamples;
-  accelAngleX = atan2(-averageAz, az) * (180.0 / PI);
-  gyroOffsetX = gyroX / numSamples;
+  int16_t moyenneAy = accelY / numSamples;
+  accelAngleY = atan2(ax, -moyenneAy) * (180.0 / PI);
+  gyroOffsetY = gyroY / numSamples;
 }
