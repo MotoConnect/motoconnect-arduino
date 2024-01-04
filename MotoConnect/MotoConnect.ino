@@ -51,7 +51,7 @@ void setup() {
 void loop() {
   int16_t ax, ay, az, gx, gy, gz, angle;
   mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
-
+  
   // Initialisation de la température
   int16_t temperature = mpu.getTemperature();
 
