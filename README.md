@@ -9,10 +9,28 @@ avec internet (ESP32) et un module sim pour avoir une connexion 4g à portée du
 - Température extérieur (Afficher seulement sur l'écran lcd)
 - Position GPS de la moto
 
-## Schéma de l'architecture
+## Schémas d'architecture
 
 ![image](diagram/LCD.png)
 
 ![image](diagram/GYRO.png)
 
 ![image](diagram/GPS.png)
+
+## Photos de la création de boitier Motoconnect
+
+![image](image/image1.jpeg)
+
+![image](image/image2.jpeg)
+
+![image](image/image3.jpeg)
+
+![image](image/image4.jpeg)
+
+![image](image/image5.jpeg)
+
+![image](image/image6.jpeg)
+
+![image](image/image7.jpeg)
+
+![image](image/image8.jpeg)
