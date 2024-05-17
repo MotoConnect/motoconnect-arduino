@@ -7,15 +7,15 @@
 #include <Firebase_ESP_Client.h>
 #include <addons/TokenHelper.h>
 
-#define WIFI_SSID "Redmi Hotspot"
-#define WIFI_PASSWORD "0775_BSA"
+#define WIFI_SSID ""
+#define WIFI_PASSWORD ""
 
-#define API_KEY "AIzaSyD3fi827lOpQ_xF124BntwaY_oQhdDA9AU"
+#define API_KEY ""
 
-#define FIREBASE_PROJECT_ID "motoconnect-c75e4"
+#define FIREBASE_PROJECT_ID ""
 
-#define USER_EMAIL "motoconnect@arduino.com"
-#define USER_PASSWORD "motoarduino"
+#define USER_EMAIL ""
+#define USER_PASSWORD ""
 
 #define ID "3"
 
